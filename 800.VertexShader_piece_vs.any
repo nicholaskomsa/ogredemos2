@@ -2,9 +2,6 @@
 @piece( custom_vs_uniformDeclaration)
 	Texture3D texPerlinNoise : register( t14 );
 	SamplerState texPerlinNoiseSampler : register( s14);
-
-	Texture2D texWindFactor : register(t15);
-	SamplerState texWindFactorSampler: register( s15);
 @end
 
 
