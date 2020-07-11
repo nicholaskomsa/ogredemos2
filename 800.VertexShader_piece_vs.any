@@ -11,7 +11,7 @@
 @piece( custom_vs_preTransform  )
 @property(wind_enabled)
 
-	float windFactor = texWindFactor.SampleLevel( texWindFactorSampler,  input.uv0, 0 ).xyz;
+	float windFactor = 1.0 - input.uv0.y; 
 
 	float random = texPerlinNoise.SampleLevel( texPerlinNoiseSampler,
 					0.2*worldPos.xyz +

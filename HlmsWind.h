@@ -103,10 +103,10 @@ class HlmsWind : public Ogre::HlmsPbs {
 
 	HlmsWindListener mWindListener;
 
-	Ogre::HlmsSamplerblock const* mNoiseSamplerBlock{ nullptr }, const* mWindFactorSamplerBlock{ nullptr };
+	Ogre::HlmsSamplerblock const* mNoiseSamplerBlock{ nullptr };
 
 	Ogre::TextureGpu* mNoiseTexture{ nullptr };
-	Ogre::TextureGpu* mWindFactorTexture{ nullptr };
+
 
 	void calculateHashForPreCreate(Ogre::Renderable* renderable, Ogre::PiecesMap* inOutPieces) override {
 
@@ -128,16 +128,6 @@ class HlmsWind : public Ogre::HlmsPbs {
 		samplerblock.mMagFilter = Ogre::FO_ANISOTROPIC;
 		mNoiseSamplerBlock = Ogre::Root::getSingleton().getHlmsManager()->getSamplerblock(samplerblock);
 
-
-		samplerblock.mU = Ogre::TextureAddressingMode::TAM_CLAMP;
-		samplerblock.mV = Ogre::TextureAddressingMode::TAM_CLAMP;
-		samplerblock.mW = Ogre::TextureAddressingMode::TAM_CLAMP;
-		samplerblock.mMaxAnisotropy = 0;
-		samplerblock.mMagFilter = Ogre::FO_NONE;
-
-		mWindFactorSamplerBlock = Ogre::Root::getSingleton().getHlmsManager()->getSamplerblock(samplerblock);
-
-
 		mNoiseTexture = textureManager->createOrRetrieveTexture(
 			"windNoise.dds",
 			Ogre::GpuPageOutStrategy::Discard,
@@ -147,14 +137,6 @@ class HlmsWind : public Ogre::HlmsPbs {
 
 		mNoiseTexture->scheduleTransitionTo(Ogre::GpuResidency::Resident);
 
-		mWindFactorTexture = textureManager->createOrRetrieveTexture(
-			"windFactor.png",
-			Ogre::GpuPageOutStrategy::Discard,
-			Ogre::TextureFlags::PrefersLoadingFromFileAsSRGB,
-			Ogre::TextureTypes::Type2D,
-			Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
-
-		mWindFactorTexture->scheduleTransitionTo(Ogre::GpuResidency::Resident);
 	}
 
 public:
@@ -184,13 +166,9 @@ public:
 		Ogre::TextureGpuManager* textureManager = manager->getDestinationRenderSystem()->getTextureGpuManager();
 		textureManager->destroyTexture(mNoiseTexture);
 		mNoiseTexture = nullptr;
-		textureManager->destroyTexture(mWindFactorTexture);
-		mWindFactorTexture = nullptr;
 
 		Ogre::Root::getSingleton().getHlmsManager()->destroySamplerblock(mNoiseSamplerBlock);
 		mNoiseSamplerBlock = nullptr;
-		Ogre::Root::getSingleton().getHlmsManager()->destroySamplerblock(mWindFactorSamplerBlock);
-		mWindFactorSamplerBlock = nullptr;
 
 	}
 
@@ -199,8 +177,6 @@ public:
 		HlmsPbs::notifyPropertiesMergedPreGenerationStep();
 
 		setTextureReg(Ogre::VertexShader, "texPerlinNoise", 14);
-
-		setTextureReg(Ogre::VertexShader, "texWindFactor", 15);
 	}
 
 	static void getDefaultPaths(Ogre::String& outDataFolderPath, Ogre::StringVector& outLibraryFoldersPaths) {
@@ -251,8 +227,6 @@ public:
 	{
 
 		*commandBuffer->addCommand<Ogre::CbTexture>() = Ogre::CbTexture(14, const_cast<Ogre::TextureGpu*>(mNoiseTexture), mNoiseSamplerBlock);
-
-		*commandBuffer->addCommand<Ogre::CbTexture>() = Ogre::CbTexture(15, const_cast<Ogre::TextureGpu*>(mWindFactorTexture), mWindFactorSamplerBlock);
 
 		return Ogre::HlmsPbs::fillBuffersFor(cache, queuedRenderable, casterPass, lastCacheHash, commandBuffer, isV1);
 	}
