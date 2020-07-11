@@ -1,0 +1,8 @@
+@piece( custom_passBuffer )
+	//Fog
+	float4 fogParams;
+	float4 fogColor;
+	//wind
+	float windStrength;
+	float globalTime;
+@end

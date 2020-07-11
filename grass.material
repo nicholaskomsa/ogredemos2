@@ -1,0 +1,8 @@
+hlms Grass1 Wind
+{
+	scene_blend	alpha_blend
+	depth_write	off
+	diffuse_map	grass1_diffuse.png
+	specular_map	grass1_diffuse.png
+	normal_map	grass1_normal.png
+}

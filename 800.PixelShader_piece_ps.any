@@ -1,0 +1,12 @@
+
+
+@piece(custom_ps_posExecution)
+@property(!hlms_shadowcaster)
+    //Linear Fog
+    float fogDistance = length(inPs.pos);
+    float fogFactor = 1.0 - saturate((passBuf.fogParams.y - fogDistance) / (passBuf.fogParams.y - passBuf.fogParams.x));
+    float3  fogColor = float3(passBuf.fogColor.xyz);
+    outPs_colour0.xyz = lerp(finalColour, fogColor, fogFactor);
+
+@end
+@end
